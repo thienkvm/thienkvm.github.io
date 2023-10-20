@@ -1,0 +1,156 @@
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background: #180808;
+    position: fixed;
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+}
+
+.nav-item {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 20px;
+}
+
+.content {
+    color: antiquewhite;
+    padding-left: 50px;
+    font-size: 30px;
+    padding-top: -initial;
+}
+
+.image-container {
+    width: 100%;
+    height: 100vh; 
+    text-align: center; 
+  }
+  
+.image-container img {
+    max-width: 100%;
+    max-height: 100%; 
+    display: block; 
+    margin: 0 auto; 
+  }
+
+.name {
+    color: white;
+    font-size: 40px;
+    position: absolute;
+    top: 50%; /* Position the text 50% from the top */
+    left: 50%; /* Position the text 50% from the left */
+    transform: translate(-50%, -30%); /* Center the text within the container */    
+    padding: 20px;
+    text-align: left;    
+    white-space: nowrap;
+    background: rgba(0, 0, 0, 0.295);
+}
+
+#times {
+    color: #180808;
+    text-align: center;
+    padding-top: 50px;
+    font-size: 30px;
+}
+
+.container {
+    text-align: center;
+    padding-top: 10%;
+    padding-left: 50%;
+    color: #180808;
+}
+
+#image1 {
+    float: left;
+    margin-right: 10px;
+    width: 500px;
+    height: 500px;
+    padding-left: 50px;
+    padding-top: 50px;
+}
+
+.image_container img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.menu {
+    text-align: left;
+}
+
+.skip {
+    color: #180808;
+    padding-top: 150px;
+    font-size: 30px;
+    text-align: right;
+    padding-right: 180px;
+}
+
+.custom-button {
+    background-color: #180808;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 25px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.skip-online {
+    padding-top: 100px;
+    padding-left: 600px;
+}
+
+.img {
+    float: left;
+    margin-right: 10px;
+    width: 500px;
+    height: 500px;
+    padding-left: 50px;
+    padding-top: 10px;
+}
+
+.img img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.menu1{
+    font-size: 70px;
+    padding-top: 10%;
+    text-align: center;
+}
+
+.Appetizers {
+    font-size: 50px;
+    text-align: center;
+    padding-top: 5%;
+}
+
+.app {
+    font-size: 25px;
+    text-align: center;
+}
+
+.main {
+    font-size: 50px;
+    text-align: center;
+    padding-top: 5%;
+}
+
+.ME {
+    font-size: 25px;
+    text-align: center;
+}
