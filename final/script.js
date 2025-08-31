@@ -354,6 +354,14 @@ class MatchaTracker {
         const canvas = document.getElementById('radar-chart');
         let isDragging = false;
         let dragPointIndex = -1;
+        
+        // Create tooltip element
+        let tooltip = document.querySelector('.radar-tooltip');
+        if (!tooltip) {
+            tooltip = document.createElement('div');
+            tooltip.className = 'radar-tooltip';
+            canvas.parentElement.appendChild(tooltip);
+        }
 
         const getMousePos = (e) => {
             const rect = canvas.getBoundingClientRect();
@@ -442,7 +450,24 @@ class MatchaTracker {
             } else {
                 // Check if hovering over a point
                 const pointIndex = getPointAtPosition(pos);
-                canvas.style.cursor = pointIndex !== -1 ? 'grab' : 'default';
+                
+                if (pointIndex !== -1) {
+                    canvas.style.cursor = 'grab';
+                    
+                    // Show tooltip
+                    const currentEntry = this.entries[this.currentEntryIndex];
+                    const tasteKeys = ['sweetness', 'bitterness', 'umami', 'astringency', 'aroma'];
+                    const tasteLabels = ['Sweetness', 'Bitterness', 'Umami', 'Astringency', 'Aroma'];
+                    const value = currentEntry.taste[tasteKeys[pointIndex]];
+                    
+                    tooltip.textContent = `${tasteLabels[pointIndex]}: ${value}/10`;
+                    tooltip.style.left = `${e.clientX + 10}px`;
+                    tooltip.style.top = `${e.clientY - 30}px`;
+                    tooltip.style.opacity = '1';
+                } else {
+                    canvas.style.cursor = 'default';
+                    tooltip.style.opacity = '0';
+                }
             }
         });
 
@@ -452,6 +477,11 @@ class MatchaTracker {
                 dragPointIndex = -1;
                 canvas.style.cursor = 'default';
             }
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            tooltip.style.opacity = '0';
+            canvas.style.cursor = 'default';
         });
 
         // Touch events for mobile
