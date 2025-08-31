@@ -174,6 +174,21 @@ class MatchaTracker {
     updateCarouselIndicators() {
         document.getElementById('current-position').textContent = this.currentEntryIndex + 1;
         document.getElementById('total-entries').textContent = this.entries.length;
+        
+        // Update dots
+        const dotsContainer = document.getElementById('indicator-dots');
+        dotsContainer.innerHTML = '';
+        
+        this.entries.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.className = `dot ${index === this.currentEntryIndex ? 'active' : ''}`;
+            dot.addEventListener('click', () => {
+                this.currentEntryIndex = index;
+                this.updateCarouselPositions();
+                this.updateCarouselIndicators();
+            });
+            dotsContainer.appendChild(dot);
+        });
     }
 
     addNewEntry() {
@@ -249,7 +264,7 @@ class MatchaTracker {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         // Draw grid
-        ctx.strokeStyle = '#e2e8f0';
+        ctx.strokeStyle = '#9D9688';
         ctx.lineWidth = 1;
         
         for (let i = 1; i <= 5; i++) {
@@ -282,8 +297,8 @@ class MatchaTracker {
             ctx.stroke();
             
             // Draw labels
-            ctx.fillStyle = '#64748b';
-            ctx.font = '12px Inter';
+            ctx.fillStyle = '#9D9688';
+            ctx.font = '12px Syne';
             ctx.textAlign = 'center';
             const labelX = centerX + Math.cos(angle) * (radius + 20);
             const labelY = centerY + Math.sin(angle) * (radius + 20);
@@ -292,8 +307,8 @@ class MatchaTracker {
 
         // Draw data polygon
         ctx.beginPath();
-        ctx.fillStyle = 'rgba(124, 179, 66, 0.3)';
-        ctx.strokeStyle = '#7CB342';
+        ctx.fillStyle = 'rgba(58, 45, 31, 0.3)';
+        ctx.strokeStyle = '#3A2D1F';
         ctx.lineWidth = 2;
 
         for (let i = 0; i < 5; i++) {
@@ -314,7 +329,7 @@ class MatchaTracker {
         ctx.stroke();
 
         // Draw data points
-        ctx.fillStyle = '#7CB342';
+        ctx.fillStyle = '#3A2D1F';
         for (let i = 0; i < 5; i++) {
             const angle = i * angleStep - Math.PI / 2;
             const value = values[i] / 10;
