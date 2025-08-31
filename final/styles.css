@@ -422,6 +422,13 @@ header h1 {
     align-items: center;
 }
 
+#radar-chart {
+    border-radius: 8px;
+    background: var(--color-card-bg);
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(58, 45, 31, 0.1);
+}
+
 .radar-controls {
     flex: 1;
 }

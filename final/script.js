@@ -248,6 +248,7 @@ class MatchaTracker {
         });
 
         this.updateRadarChart();
+        this.setupRadarInteraction();
     }
 
     updateRadarChart() {
@@ -285,6 +286,9 @@ class MatchaTracker {
 
         const angleStep = (2 * Math.PI) / 5;
         
+        // Store point positions for interaction
+        this.radarPoints = [];
+        
         // Draw axis lines
         for (let i = 0; i < 5; i++) {
             const angle = i * angleStep - Math.PI / 2;
@@ -317,6 +321,9 @@ class MatchaTracker {
             const x = centerX + Math.cos(angle) * radius * value;
             const y = centerY + Math.sin(angle) * radius * value;
             
+            // Store point for interaction
+            this.radarPoints[i] = { x, y, angle, index: i };
+            
             if (i === 0) {
                 ctx.moveTo(x, y);
             } else {
@@ -328,18 +335,156 @@ class MatchaTracker {
         ctx.fill();
         ctx.stroke();
 
-        // Draw data points
+        // Draw interactive data points
         ctx.fillStyle = '#3A2D1F';
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2;
+        
         for (let i = 0; i < 5; i++) {
-            const angle = i * angleStep - Math.PI / 2;
-            const value = values[i] / 10;
-            const x = centerX + Math.cos(angle) * radius * value;
-            const y = centerY + Math.sin(angle) * radius * value;
+            const point = this.radarPoints[i];
             
             ctx.beginPath();
-            ctx.arc(x, y, 4, 0, 2 * Math.PI);
+            ctx.arc(point.x, point.y, 6, 0, 2 * Math.PI);
             ctx.fill();
+            ctx.stroke();
         }
+    }
+
+    setupRadarInteraction() {
+        const canvas = document.getElementById('radar-chart');
+        let isDragging = false;
+        let dragPointIndex = -1;
+
+        const getMousePos = (e) => {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        };
+
+        const getTouchPos = (e) => {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.touches[0].clientX - rect.left,
+                y: e.touches[0].clientY - rect.top
+            };
+        };
+
+        const getPointAtPosition = (pos) => {
+            if (!this.radarPoints) return -1;
+            
+            for (let i = 0; i < this.radarPoints.length; i++) {
+                const point = this.radarPoints[i];
+                const distance = Math.sqrt(
+                    Math.pow(pos.x - point.x, 2) + Math.pow(pos.y - point.y, 2)
+                );
+                if (distance <= 10) { // 10px tolerance
+                    return i;
+                }
+            }
+            return -1;
+        };
+
+        const updateValueFromPosition = (pointIndex, pos) => {
+            const currentEntry = this.entries[this.currentEntryIndex];
+            if (!currentEntry) return;
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 80;
+            const angle = this.radarPoints[pointIndex].angle;
+
+            // Calculate distance from center
+            const dx = pos.x - centerX;
+            const dy = pos.y - centerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            // Constrain to radius and calculate value (0-10)
+            const constrainedDistance = Math.min(distance, radius);
+            const value = Math.round((constrainedDistance / radius) * 10);
+
+            // Update the corresponding taste value
+            const tasteKeys = ['sweetness', 'bitterness', 'umami', 'astringency', 'aroma'];
+            const tasteKey = tasteKeys[pointIndex];
+            
+            currentEntry.taste[tasteKey] = value;
+
+            // Update the corresponding slider
+            const slider = document.getElementById(tasteKey);
+            if (slider) {
+                slider.value = value;
+            }
+
+            // Redraw chart
+            this.updateRadarChart();
+        };
+
+        // Mouse events
+        canvas.addEventListener('mousedown', (e) => {
+            const pos = getMousePos(e);
+            const pointIndex = getPointAtPosition(pos);
+            
+            if (pointIndex !== -1) {
+                isDragging = true;
+                dragPointIndex = pointIndex;
+                canvas.style.cursor = 'grabbing';
+                e.preventDefault();
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const pos = getMousePos(e);
+            
+            if (isDragging && dragPointIndex !== -1) {
+                updateValueFromPosition(dragPointIndex, pos);
+                e.preventDefault();
+            } else {
+                // Check if hovering over a point
+                const pointIndex = getPointAtPosition(pos);
+                canvas.style.cursor = pointIndex !== -1 ? 'grab' : 'default';
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                dragPointIndex = -1;
+                canvas.style.cursor = 'default';
+            }
+        });
+
+        // Touch events for mobile
+        canvas.addEventListener('touchstart', (e) => {
+            const pos = getTouchPos(e);
+            const pointIndex = getPointAtPosition(pos);
+            
+            if (pointIndex !== -1) {
+                isDragging = true;
+                dragPointIndex = pointIndex;
+                e.preventDefault();
+            }
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (isDragging && dragPointIndex !== -1) {
+                const pos = getTouchPos(e);
+                updateValueFromPosition(dragPointIndex, pos);
+                e.preventDefault();
+            }
+        });
+
+        canvas.addEventListener('touchend', () => {
+            if (isDragging) {
+                isDragging = false;
+                dragPointIndex = -1;
+            }
+        });
+
+        // Prevent context menu on right click
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+        });
     }
 
     // Grid View
