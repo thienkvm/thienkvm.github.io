@@ -1,6 +1,195 @@
 <!DOCTYPE html>
-<html>
-    <body>
-        FINAL
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matcha Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div id="app">
+        <!-- Landing Page -->
+        <div id="landing-page" class="page active">
+            <header>
+                <h1>Matcha Tracker</h1>
+                <div class="view-toggles">
+                    <button id="grid-view-btn" class="view-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/>
+                        </svg>
+                    </button>
+                    <button id="list-view-btn" class="view-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <div class="carousel-container">
+                <div class="carousel-indicators">
+                    <div id="indicator-dots">
+                        <!-- Dots will be dynamically generated -->
+                    </div>
+                    <div class="indicator-text"><span id="current-position">1</span> of <span id="total-entries">3</span></div>
+                </div>
+
+                <div class="carousel-wrapper">
+                    <div class="carousel" id="matcha-carousel">
+                        <!-- Matcha entries will be dynamically inserted here -->
+                    </div>
+                </div>
+
+                <button class="save-entry-btn" id="save-entry-btn">Save Entry</button>
+            </div>
+        </div>
+
+        <!-- Notes Page -->
+        <div id="notes-page" class="page">
+            <header>
+                <button id="back-to-landing" class="back-btn">← Back</button>
+                <h1>Edit Entry</h1>
+                <div class="view-toggles">
+                    <button id="grid-view-btn-notes" class="view-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/>
+                        </svg>
+                    </button>
+                    <button id="list-view-btn-notes" class="view-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+                        </svg>
+                    </button>
+                </div>
+            </header>
+
+            <div class="notes-content">
+                <div class="image-section">
+                    <div class="matcha-image-container">
+                        <img id="notes-matcha-image" src="" alt="Matcha">
+                        <button class="upload-btn" id="upload-image-btn">
+                            <input type="file" id="image-upload" accept="image/*" hidden>
+                            📷 Upload Image
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-group">
+                        <label for="matcha-name">Matcha Name</label>
+                        <div class="name-input-container">
+                            <input type="text" id="matcha-name" placeholder="Enter matcha name">
+                            <button id="translate-btn" class="translate-btn">Translate</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prefecture">Prefecture</label>
+                        <input type="text" id="prefecture" placeholder="Enter prefecture">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Flavor Profile</label>
+                        <div class="flavor-tags">
+                            <button class="flavor-tag" data-flavor="grassy">Grassy</button>
+                            <button class="flavor-tag" data-flavor="nutty">Nutty</button>
+                            <button class="flavor-tag" data-flavor="floral">Floral</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Taste Analysis</label>
+                        <div class="radar-chart-container">
+                            <canvas id="radar-chart" width="200" height="200"></canvas>
+                            <div class="radar-controls">
+                                <div class="control-item">
+                                    <label>Sweetness</label>
+                                    <input type="range" id="sweetness" min="0" max="10" value="5">
+                                </div>
+                                <div class="control-item">
+                                    <label>Bitterness</label>
+                                    <input type="range" id="bitterness" min="0" max="10" value="5">
+                                </div>
+                                <div class="control-item">
+                                    <label>Umami</label>
+                                    <input type="range" id="umami" min="0" max="10" value="5">
+                                </div>
+                                <div class="control-item">
+                                    <label>Astringency</label>
+                                    <input type="range" id="astringency" min="0" max="10" value="5">
+                                </div>
+                                <div class="control-item">
+                                    <label>Aroma</label>
+                                    <input type="range" id="aroma" min="0" max="10" value="5">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Notes</label>
+                        <textarea id="notes" placeholder="Add your notes about this matcha..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Color</label>
+                        <div class="color-picker">
+                            <input type="color" id="custom-color" value="#7CB342">
+                            <div class="suggested-colors">
+                                <div class="color-option" data-color="#7CB342" style="background-color: #7CB342;"></div>
+                                <div class="color-option" data-color="#8BC34A" style="background-color: #8BC34A;"></div>
+                                <div class="color-option" data-color="#9CCC65" style="background-color: #9CCC65;"></div>
+                                <div class="color-option" data-color="#AED581" style="background-color: #AED581;"></div>
+                                <div class="color-option" data-color="#C5E1A5" style="background-color: #C5E1A5;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="save-btn" id="save-notes-btn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid View Page -->
+        <div id="grid-page" class="page">
+            <header>
+                <button id="back-to-notes" class="back-btn">← Back</button>
+                <h1>Grid View</h1>
+            </header>
+
+            <div class="filter-section">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="grassy">Grassy</button>
+                <button class="filter-btn" data-filter="nutty">Nutty</button>
+                <button class="filter-btn" data-filter="floral">Floral</button>
+            </div>
+
+            <div class="grid-container" id="grid-container">
+                <!-- Grid items will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- List View Page -->
+        <div id="list-page" class="page">
+            <header>
+                <button id="back-to-notes-from-list" class="back-btn">← Back</button>
+                <h1>List View</h1>
+            </header>
+
+            <div class="filter-section">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="grassy">Grassy</button>
+                <button class="filter-btn" data-filter="nutty">Nutty</button>
+                <button class="filter-btn" data-filter="floral">Floral</button>
+            </div>
+
+            <div class="list-container" id="list-container">
+                <!-- List items will be dynamically inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
